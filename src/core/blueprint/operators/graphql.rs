@@ -20,7 +20,6 @@ fn create_related_fields(
     if visited.contains(type_name) {
         return RelatedFields(map);
     }
-    visited.insert(type_name.to_string());
 
     if let Some(type_) = config.find_type(type_name) {
         for (name, field) in &type_.fields {
@@ -34,6 +33,8 @@ fn create_related_fields(
                                 create_related_fields(config, field.type_of.name(), visited),
                             ),
                         );
+
+                        visited.insert(type_name.to_string());
                     }
                 } else {
                     map.insert(
@@ -43,6 +44,7 @@ fn create_related_fields(
                             create_related_fields(config, field.type_of.name(), visited),
                         ),
                     );
+                    visited.insert(type_name.to_string());
                 }
             }
         }
@@ -51,7 +53,7 @@ fn create_related_fields(
             map.extend(create_related_fields(config, type_name, visited).0);
         }
     };
-
+    visited.insert(type_name.to_string());
     RelatedFields(map)
 }
 
