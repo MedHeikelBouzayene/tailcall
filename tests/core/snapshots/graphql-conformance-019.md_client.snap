@@ -1,0 +1,29 @@
+---
+source: tests/core/spec.rs
+expression: formatted
+---
+type Page {
+  id: ID!
+  name: String!
+  pagePost: Post
+}
+
+type Post {
+  content: String
+  id: ID!
+}
+
+type Query {
+  page(id: ID!): Page!
+  user(id: ID!): User!
+}
+
+type User {
+  id: ID!
+  newName: String!
+  userPost: Post
+}
+
+schema {
+  query: Query
+}

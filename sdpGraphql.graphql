@@ -1,0 +1,365 @@
+schema
+  @server(port: 8001, hostname: "0.0.0.0", )
+  @upstream(
+    allowedHeaders: ["Authorization"]
+  ) {
+    query: Query
+  }
+type Query {
+  queryOffshoreWindFarm(filter: OffshoreWindFarmFilterInput, pagination: PaginationInput, orderBy: OffshoreWindFarmOrderByInput, cascade: [String]):[OffshoreWindFarm]
+    @graphQL(
+      name: "offshorewindfarm"
+      url: "https://greaterwashdev.dev.aurora.equinor.com/storm/sdpGraphql"
+      args: [
+        {key: "filter", value: "{{.args.filter}}"}
+        {key: "pagination", value: "{{.args.pagination}}"}
+        {key: "orderBy", value: "{{.args.orderBy}}"}
+        {key: "cascade", value: "{{.args.cascade}}"}
+      ]
+    )
+
+  queryOffshoreWindTurbine(filter: OffshoreWindTurbineFilterInput, pagination: PaginationInput, orderBy: OffshoreWindTurbineOrderByInput, cascade: [String]):[OffshoreWindTurbine]
+    @graphQL(
+      name: "offshorewindturbine"
+      url: "https://greaterwashdev.dev.aurora.equinor.com/storm/sdpGraphql"
+      args: [
+        {key: "filter", value: "{{.args.filter}}"}
+        {key: "pagination", value: "{{.args.pagination}}"}
+        {key: "orderBy", value: "{{.args.orderBy}}"}
+        {key: "cascade", value: "{{.args.cascade}}"}
+      ]
+    )
+
+  queryOffshoreSubstation(filter: OffshoreSubstationFilterInput, pagination: PaginationInput, orderBy: OffshoreSubstationOrderByInput, cascade: [String]):[OffshoreSubstation]  
+    @graphQL(
+      name: "offshoresubstation"
+      url: "https://greaterwashdev.dev.aurora.equinor.com/storm/sdpGraphql"
+      args: [
+        {key: "filter", value: "{{.args.filter}}"}
+        {key: "pagination", value: "{{.args.pagination}}"}
+        {key: "orderBy", value: "{{.args.orderBy}}"}
+        {key: "cascade", value: "{{.args.cascade}}"}
+      ]
+    )
+
+  queryOnshoreSubstation(filter: OnshoreSubstationFilterInput, pagination: PaginationInput, orderBy: OnshoreSubstationOrderByInput, cascade: [String]):[OnshoreSubstation] 
+    @graphQL(
+      name: "onshoresubstation"
+      url: "https://greaterwashdev.dev.aurora.equinor.com/storm/sdpGraphql"
+      args: [
+        {key: "filter", value: "{{.args.filter}}"}
+        {key: "pagination", value: "{{.args.pagination}}"}
+        {key: "orderBy", value: "{{.args.orderBy}}"}
+        {key: "cascade", value: "{{.args.cascade}}"}
+      ]
+    )
+
+  queryOnshoreSubstation(filter: OnshoreSubstationFilterInput, pagination: PaginationInput, orderBy: OnshoreSubstationOrderByInput, cascade: [String]):[OnshoreSubstation]
+    @graphQL(
+      name: "onshoresubstation"
+      url: "https://greaterwashdev.dev.aurora.equinor.com/storm/sdpGraphql"
+      args: [
+        {key: "filter", value: "{{.args.filter}}"}
+        {key: "pagination", value: "{{.args.pagination}}"}
+        {key: "orderBy", value: "{{.args.orderBy}}"}
+        {key: "cascade", value: "{{.args.cascade}}"}
+      ]
+    )
+
+  queryTag(filter: TagFilterInput, pagination: PaginationInput, orderBy: TagOrderByInput, cascade: [String]):[Tag]
+    @graphQL(
+      name: "tag"
+      url: "https://greaterwashdev.dev.aurora.equinor.com/storm/sdpGraphql"
+      args: [
+        {key: "filter", value: "{{.args.filter}}"}
+        {key: "pagination", value: "{{.args.pagination}}"}
+        {key: "orderBy", value: "{{.args.orderBy}}"}
+        {key: "cascade", value: "{{.args.cascade}}"}
+      ]
+    )
+}
+
+enum AssetStates {
+  COMMISSIONING
+  CONSTRUCTION
+  OPERATION
+  PLANNING
+  UNKNOWN
+}
+
+enum WattUnits {
+  GW
+  kVAr
+  kW
+  MVAr
+  MW
+  W
+}
+
+input StringFilterInput {
+  eq: String
+  ne: String
+  gt: String
+  gte: String
+  lt: String
+  lte: String
+  is_in: [String!]
+  is_not_in: [String!]
+  is_null: String
+  is_not_null: String
+  contains: String
+  starts_with: String
+  ends_with: String
+  like: String
+  not_like: String
+  between: [String!]
+  not_between: [String!]
+}
+
+input AssetStatesEnumFilterInput {
+  eq: AssetStates
+  ne: AssetStates
+  gt: AssetStates
+  gte: AssetStates
+  lt: AssetStates
+  lte: AssetStates
+  is_in: [AssetStates!]
+  is_not_in: [AssetStates!]
+  is_null: AssetStates
+  is_not_null: AssetStates
+}
+
+input FloatFilterInput {
+  eq: Float
+  ne: Float
+  gt: Float
+  gte: Float
+  lt: Float
+  lte: Float
+  is_in: [Float!]
+  is_not_in: [Float!]
+  is_null: Float
+  is_not_null: Float
+  between: [Float!]
+  not_between: [Float!]
+}
+
+input IntFilterInput {
+  eq: Int
+  ne: Int
+  gt: Int
+  gte: Int
+  lt: Int
+  lte: Int
+  is_in: [Int!]
+  is_not_in: [Int!]
+  is_null: Int
+  is_not_null: Int
+  between: [Int!]
+  not_between: [Int!]
+}
+
+input TextFilterInput {
+  eq: String
+  ne: String
+  gt: String
+  gte: String
+  lt: String
+  lte: String
+  is_in: [String!]
+  is_not_in: [String!]
+  is_null: String
+  is_not_null: String
+  between: [String!]
+  not_between: [String!]
+}
+
+input WattunitsEnumFilterInput {
+  eq: WattUnits
+  ne: WattUnits
+  gt: WattUnits
+  gte: WattUnits
+  lt: WattUnits
+  lte: WattUnits
+  is_in: [WattUnits!]
+  is_not_in: [WattUnits!]
+  is_null: WattUnits
+  is_not_null: WattUnits
+}
+
+input PageInput {
+  page: Int!
+  limit: Int!
+}
+
+input OffsetInput {
+  offset: Int!
+  limit: Int!
+}
+
+input PaginationInput {
+  page: PageInput
+  offset: OffsetInput
+}
+
+enum OrderByEnum {
+  ASC
+  DESC
+}
+
+input OffshoreSubstationFilterInput {
+  name: StringFilterInput
+  shortname: StringFilterInput @modify(name: "shortName")
+  saplocationid: StringFilterInput
+}
+
+input OnshoreSubstationFilterInput {
+  name: StringFilterInput
+  shortname: StringFilterInput
+  saplocationid: StringFilterInput 
+}
+
+input OffshoreWindFarmFilterInput {
+  name: StringFilterInput
+  shortname: StringFilterInput @modify(name: "shortName")
+  state: AssetStatesEnumFilterInput
+  commercialdatetimeoperation: TextFilterInput 
+  ratedcapacity: FloatFilterInput 
+  ratedcapacityunit: WattunitsEnumFilterInput 
+  plantid: StringFilterInput 
+}
+
+input OffshoreWindTurbineFilterInput {
+  name: StringFilterInput
+  shortname: StringFilterInput 
+  plannedcommissioneddate: TextFilterInput 
+  actualcommissiondate: TextFilterInput 
+  actualrnainstallationdate: TextFilterInput 
+  saplocationid: StringFilterInput 
+  stringposition: StringFilterInput 
+  stringname: StringFilterInput 
+}
+
+input TagFilterInput {
+  name: StringFilterInput
+  id: StringFilterInput
+  description: StringFilterInput
+  category: IntFilterInput
+  categorydescription: StringFilterInput 
+  system: StringFilterInput
+  subsystem: StringFilterInput 
+  status: StringFilterInput
+  functionallocation: StringFilterInput 
+  locationcode: StringFilterInput 
+  plantid: StringFilterInput 
+}
+
+input OffshoreSubstationOrderByInput {
+  name: OrderByEnum 
+  shortname: OrderByEnum 
+  saplocationid: OrderByEnum 
+}
+
+input OnshoreSubstationOrderByInput {
+  name: OrderByEnum
+  shortname: OrderByEnum 
+  saplocationid: OrderByEnum 
+}
+
+input OffshoreWindFarmOrderByInput {
+  name: OrderByEnum
+  shortname: OrderByEnum 
+  state: OrderByEnum
+  commercialdatetimeoperation: OrderByEnum 
+  ratedcapacity: OrderByEnum 
+  ratedcapacityunit: OrderByEnum 
+  plantid: OrderByEnum 
+}
+
+input OffshoreWindTurbineOrderByInput {
+  name: OrderByEnum
+  shortname: OrderByEnum 
+  plannedcommissioneddate: OrderByEnum 
+  actualcommissiondate: OrderByEnum 
+  actualrnainstallationdate: OrderByEnum 
+  saplocationid: OrderByEnum 
+  stringposition: OrderByEnum 
+  stringname: OrderByEnum 
+}
+
+input TagOrderByInput {
+  name: OrderByEnum
+  id: OrderByEnum
+  description: OrderByEnum
+  category: OrderByEnum
+  categorydescription: OrderByEnum 
+  system: OrderByEnum
+  subsystem: OrderByEnum 
+  status: OrderByEnum
+  functionallocation: OrderByEnum 
+  locationcode: OrderByEnum 
+  plantid: OrderByEnum 
+}
+
+type OffshoreWindFarm {
+  name: String!
+  shortname: String! @modify(name: "shortName")
+  state: AssetStates!
+  commercialdatetimeoperation: DateTime @modify(name: "commercialDateTimeOperation")
+  ratedcapacity: Float @modify(name: "ratedCapacity")
+  ratedcapacityunit: WattUnits @modify(name: "ratedCapacityUnit")
+  plantid: String @modify(name: "plantId")
+  onshoresubstation: [OnshoreSubstation!] @modify(name: "hasOnshoreSubstation")
+  offshoresubstation: [OffshoreSubstation!] @modify(name: "hasOffshoreSubstation")
+  offshorewindturbine: [OffshoreWindTurbine!] @modify(name: "hasOffshoreWindTurbine") 
+}
+
+type OffshoreWindTurbine {
+  name: String!
+  shortname: String! @modify(name: "shortName")
+  plannedcommissioneddate: DateTime @modify(name: "plannedCommissionedDate")
+  actualcommissiondate: DateTime @modify(name: "actualCommissionDate")
+  actualrnainstallationdate: DateTime @modify(name: "actualRNAInstallationDate")
+  saplocationid: String @modify(name: "sapLocationId")
+  offshorewindfarm: OffshoreWindFarm @modify(name: "partOfOffshoreWindFarm")
+  stringposition: String @modify(name: "stringPosition")
+  stringname: String @modify(name: "stringName")
+  selfRef1: OffshoreWindTurbine @modify(name: "next")
+  selfRef2: OffshoreWindTurbine @modify(name: "previous")
+  tag: [Tag!]
+  offshoresubstation: OffshoreSubstation @modify(name: "connectedToOffshoreSubstation")
+}
+
+type OffshoreSubstation {
+  name: String!
+  shortname: String! @modify(name: "shortName")
+  saplocationid: String @modify(name: "sapLocationId")
+  offshorewindfarm: OffshoreWindFarm @modify(name: "partOfOffshoreWindFarm")
+  tag: [Tag!]
+}
+
+type OnshoreSubstation {
+  name: String!
+  shortname: String @modify(name: "shortName")
+  saplocationid: String @modify(name: "sapLocationId")
+  offshorewindfarm: OffshoreWindFarm @modify(name: "partOfOffshoreWindFarm")
+  tag: [Tag!]
+}
+
+type Tag {
+  name: String!
+  id: String!
+  description: String
+  category: Int
+  categorydescription: String @modify(name: "categoryDescription")
+  system: String
+  subsystem: String @modify(name: "subSystem")
+  functionallocation: String @modify(name: "functionlLocation")
+  locationcode: String @modify(name: "locationCode")
+  plantid: String @modify(name: "plantId")
+  offshorewindturbine: [OffshoreWindTurbine!] @modify(name: "hasOffshoreWindTurbine")
+  offshoresubstation: [OffshoreSubstation!] @modify(name: "hasOffshoreSubstation")
+  onshoresubstation: [OnshoreSubstation!] @modify(name: "hasOnshoreSubstation")
+  selfRef: Tag @modify(name: "hasParentTag")
+  selfRefReverse: [Tag!] @modify(name: "hasChildTags")
+}
