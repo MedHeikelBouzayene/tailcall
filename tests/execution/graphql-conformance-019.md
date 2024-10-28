@@ -19,14 +19,14 @@ type User {
 }
 
 type Page {
-    id: ID!
-    name: String!
-    post: Post @modify(name: "pagePost")
+  id: ID!
+  name: String!
+  post: Post @modify(name: "pagePost")
 }
 
 type Post {
-    id: ID!
-    content: String
+  id: ID!
+  content: String
 }
 ```
 
@@ -59,7 +59,6 @@ type Post {
           post:
             id: 1
             content: Hello from page 4
-          
 ```
 
 ```yml @test
