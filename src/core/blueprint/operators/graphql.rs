@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, VecDeque};
 
 use crate::core::blueprint::FieldDefinition;
 use crate::core::config::{
@@ -13,17 +13,20 @@ use crate::core::valid::{Valid, ValidationError, Validator};
 
 fn create_related_fields(
     config: &Config,
-    type_name: &str,
-    visited: &mut HashSet<String>,
-) -> RelatedFields {
+    type_names: VecDeque<String>,
+    visited: &mut HashSet<VecDeque<String>>,
+) -> Option<RelatedFields> {
     let mut map = HashMap::new();
-    if visited.contains(type_name) {
-        return RelatedFields(map);
+    if visited.contains(&type_names) {
+        return Some(RelatedFields(map));
     }
-    visited.insert(type_name.to_string());
-
+    visited.insert(type_names.clone());
+    let type_name = type_names.back()?;
     if let Some(type_) = config.find_type(type_name) {
         for (name, field) in &type_.fields {
+            let mut new_type_names = type_names.clone();
+            new_type_names.pop_front();
+            new_type_names.push_back(field.type_of.name().to_string());
             if !field.has_resolver() {
                 if let Some(modify) = &field.modify {
                     if let Some(modified_name) = &modify.name {
@@ -31,7 +34,7 @@ fn create_related_fields(
                             modified_name.clone(),
                             (
                                 name.clone(),
-                                create_related_fields(config, field.type_of.name(), visited),
+                                create_related_fields(config, new_type_names, visited)?,
                             ),
                         );
                     }
@@ -40,19 +43,22 @@ fn create_related_fields(
                         name.clone(),
                         (
                             name.clone(),
-                            create_related_fields(config, field.type_of.name(), visited),
+                            create_related_fields(config, new_type_names, visited)?,
                         ),
                     );
                 }
             }
         }
-    } else if let Some(union_) = config.find_union(type_name) {
+    } else if let Some(union_) = config.find_union(type_names.back()?) {
         for type_name in &union_.types {
-            map.extend(create_related_fields(config, type_name, visited).0);
+            let mut new_type_names = type_names.clone();
+            new_type_names.pop_front();
+            new_type_names.push_back(type_name.to_string());
+            map.extend(create_related_fields(config, new_type_names, visited)?.0);
         }
     };
 
-    RelatedFields(map)
+    Some(RelatedFields(map))
 }
 
 pub fn compile_graphql(
@@ -65,17 +71,27 @@ pub fn compile_graphql(
     Valid::succeed(graphql.url.as_str())
         .zip(helpers::headers::to_mustache_headers(&graphql.headers))
         .and_then(|(base_url, headers)| {
-            Valid::from(
-                RequestTemplate::new(
-                    base_url.to_owned(),
-                    operation_type,
-                    &graphql.name,
-                    args,
-                    headers,
-                    create_related_fields(config, type_name, &mut HashSet::new()),
-                )
-                .map_err(|e| ValidationError::new(e.to_string())),
+            Valid::from_option(
+                create_related_fields(
+                    config,
+                    VecDeque::from(vec![type_name.to_string(); graphql.depth.unwrap_or(5)]),
+                    &mut HashSet::new(),
+                ),
+                "Logical error occurred while creating Related Fields".to_string(),
             )
+            .and_then(|related_fields| {
+                Valid::from(
+                    RequestTemplate::new(
+                        base_url.to_owned(),
+                        operation_type,
+                        &graphql.name,
+                        args,
+                        headers,
+                        related_fields,
+                    )
+                    .map_err(|e| ValidationError::new(e.to_string())),
+                )
+            })
         })
         .map(|req_template| {
             let field_name = graphql.name.clone();
