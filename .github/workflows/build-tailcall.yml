@@ -35,6 +35,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check architecture
+        run: uname -m
   check_if_build:
     name: Check if Build
     runs-on: ubuntu-latest
