@@ -40,6 +40,7 @@ fi
 
 # Derive download URL based on detected OS and architecture
 URL="$BASE_URL/$VERSION/tailcall-${ARCH}-${OS}"
+echo "$URL"
 
 # Prepare versioned directory for download
 INSTALL_DIR="$HOME/.tailcall/lib/$VERSION"
