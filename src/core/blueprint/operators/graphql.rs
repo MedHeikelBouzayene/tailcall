@@ -15,44 +15,62 @@ fn create_related_fields(
     config: &Config,
     type_name: &str,
     visited: &mut HashSet<String>,
-) -> RelatedFields {
+    paths: &mut HashMap<String, Vec<String>>,
+    path: Vec<String>,
+    root: bool,
+) -> Option<RelatedFields> {
     let mut map = HashMap::new();
     if visited.contains(type_name) {
-        return RelatedFields(map);
+        return Some(RelatedFields(map));
     }
     visited.insert(type_name.to_string());
-
     if let Some(type_) = config.find_type(type_name) {
         for (name, field) in &type_.fields {
             if !field.has_resolver() {
-                if let Some(modify) = &field.modify {
-                    if let Some(modified_name) = &modify.name {
-                        map.insert(
-                            modified_name.clone(),
-                            (
-                                name.clone(),
-                                create_related_fields(config, field.type_of.name(), visited),
-                            ),
-                        );
-                    }
-                } else {
-                    map.insert(
+                let used_name = match &field.modify {
+                    Some(modify) => match &modify.name {
+                        Some(modified_name) => Some(modified_name),
+                        _ => None,
+                    },
+                    _ => Some(name),
+                };
+                let mut next_path = path.clone();
+                next_path.push(used_name?.to_string());
+                if !(paths.contains_key(field.type_of.name())) {
+                    paths.insert(field.type_of.name().to_string(), next_path.clone());
+                };
+                map.insert(
+                    used_name?.to_string(),
+                    (
                         name.clone(),
-                        (
-                            name.clone(),
-                            create_related_fields(config, field.type_of.name(), visited),
-                        ),
-                    );
-                }
+                        create_related_fields(
+                            config,
+                            field.type_of.name(),
+                            visited,
+                            paths,
+                            next_path.clone(),
+                            false,
+                        )?,
+                        paths.get(field.type_of.name())?.to_vec(),
+                        root && (type_name == field.type_of.name()),
+                    ),
+                );
             }
         }
     } else if let Some(union_) = config.find_union(type_name) {
         for type_name in &union_.types {
-            map.extend(create_related_fields(config, type_name, visited).0);
+            let mut next_path = path.clone();
+            next_path.push(type_name.to_string());
+            if !(paths.contains_key(type_name)) {
+                paths.insert(type_name.to_string(), next_path.clone());
+            };
+            map.extend(
+                create_related_fields(config, type_name, visited, paths, next_path, root)?.0,
+            );
         }
     };
 
-    RelatedFields(map)
+    Some(RelatedFields(map))
 }
 
 pub fn compile_graphql(
@@ -65,17 +83,30 @@ pub fn compile_graphql(
     Valid::succeed(graphql.url.as_str())
         .zip(helpers::headers::to_mustache_headers(&graphql.headers))
         .and_then(|(base_url, headers)| {
-            Valid::from(
-                RequestTemplate::new(
-                    base_url.to_owned(),
-                    operation_type,
-                    &graphql.name,
-                    args,
-                    headers,
-                    create_related_fields(config, type_name, &mut HashSet::new()),
-                )
-                .map_err(|e| ValidationError::new(e.to_string())),
+            Valid::from_option(
+                create_related_fields(
+                    config,
+                    type_name,
+                    &mut HashSet::new(),
+                    &mut HashMap::new(),
+                    vec![],
+                    true,
+                ),
+                "Logical error occurred while creating Related Fields".to_string(),
             )
+            .and_then(|related_fields| {
+                Valid::from(
+                    RequestTemplate::new(
+                        base_url.to_owned(),
+                        operation_type,
+                        &graphql.name,
+                        args,
+                        headers,
+                        related_fields,
+                    )
+                    .map_err(|e| ValidationError::new(e.to_string())),
+                )
+            })
         })
         .map(|req_template| {
             let field_name = graphql.name.clone();
