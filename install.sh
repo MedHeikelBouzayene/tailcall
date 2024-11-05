@@ -5,7 +5,7 @@ set -e
 # Get version argument from command line
 VERSION=${1:-"latest"}
 
-BASE_URL="https://github.com/tailcallhq/tailcall/releases/download"
+BASE_URL="https://github.com/MedHeikelBouzayene/tailcall/releases/download"
 
 if [ "$VERSION" = "latest" ]; then
   VERSION=$(curl --silent "https://api.github.com/repos/tailcallhq/tailcall/releases/latest" | jq -r '.tag_name')
