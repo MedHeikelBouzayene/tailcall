@@ -48,7 +48,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: MedHeikelBouzayene/tailcall
-          ref: fix/graphql_nested_queries
+          ref: main
 
   test:
     name: Run Tests on linux-x64-gnu
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: MedHeikelBouzayene/tailcall
-          ref: fix/graphql_nested_queries
+          ref: main
 
       - uses: taiki-e/install-action@cargo-llvm-cov
 
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: MedHeikelBouzayene/tailcall
-          ref: fix/graphql_nested_queries
+          ref: main
 
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
@@ -112,7 +112,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: MedHeikelBouzayene/tailcall
-          ref: fix/graphql_nested_queries
+          ref: main
 
       - id: create_release
         uses: release-drafter/release-drafter@v6
@@ -146,7 +146,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: MedHeikelBouzayene/tailcall
-          ref: fix/graphql_nested_queries
+          ref: main
 
       - name: Install Correct Toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
