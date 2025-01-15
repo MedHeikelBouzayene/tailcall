@@ -4,8 +4,9 @@ set -e
 
 # Get version argument from command line
 VERSION=${1:-"latest"}
+echo $VERSION
 
-BASE_URL="https://github.com/MedHeikelBouzayene/tailcall/releases/download/"
+BASE_URL="https://github.com/MedHeikelBouzayene/tailcall/releases/download"
 
 if [ "$VERSION" = "latest" ]; then
   VERSION=$(curl --silent "https://api.github.com/repos/tailcallhq/tailcall/releases/latest" | jq -r '.tag_name')
@@ -40,7 +41,7 @@ fi
 
 # Derive download URL based on detected OS and architecture
 URL="$BASE_URL/$VERSION/tailcall-${ARCH}-${OS}"
-
+echo $URL
 # Prepare versioned directory for download
 INSTALL_DIR="$HOME/.tailcall/lib/$VERSION"
 mkdir -p "$INSTALL_DIR"
