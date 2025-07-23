@@ -5,10 +5,10 @@ use std::sync::Arc;
 
 use crate::cli::runtime::init;
 use crate::core::app_context::AppContext;
-use crate::core::blueprint::telemetry::TelemetryExporter;
+// use crate::core::blueprint::telemetry::TelemetryExporter;
 use crate::core::blueprint::{Blueprint, Http};
 use crate::core::rest::{EndpointSet, Unchecked};
-use crate::core::schema_extension::SchemaExtension;
+// use crate::core::schema_extension::SchemaExtension;
 
 pub struct ServerConfig {
     pub blueprint: Blueprint,
@@ -22,7 +22,7 @@ impl ServerConfig {
     ) -> anyhow::Result<Self> {
         let mut rt = init(&blueprint);
 
-        let mut extensions = vec![];
+        let extensions = vec![];
 
         // if let Some(TelemetryExporter::Apollo(apollo)) = blueprint.telemetry.export.as_ref() {
         //     let (graph_id, variant) = apollo.graph_ref.split_once('@').unwrap();
