@@ -22,7 +22,7 @@ impl ServerConfig {
     ) -> anyhow::Result<Self> {
         let mut rt = init(&blueprint);
 
-        let mut extensions = vec![];
+        let extensions = vec![];
 
         // if let Some(TelemetryExporter::Apollo(apollo)) = blueprint.telemetry.export.as_ref() {
         //     let (graph_id, variant) = apollo.graph_ref.split_once('@').unwrap();
